@@ -8,6 +8,7 @@ db = mysql.connector.connect(
     database = 'telegram_bot' #Название которое сделали в sql workbench
 )
 
+db.autocommit = True #Свойство автоотправки запросов insert
 cursor = db.cursor() #С помощью этой переменной будем делать запросы к бд
 
 

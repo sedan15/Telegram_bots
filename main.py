@@ -6,10 +6,9 @@ from json_commands import *
 import db
 
 
-token = '8428189477:AAHPkJmwNKGnWl3VCf5KqT-DbgtN7LeoEWs'
+token = '8428189477:AAGbLM-CXunZrAMdE71ckM0A1tTsIzFkLks'
 
 bot = telebot.TeleBot(token)
-
 Users = read_json('users.json') #Список с пользователями
 
 print(Users)
@@ -28,9 +27,8 @@ def Registration(call:types.CallbackQuery):
     if call.message:
         if call.data == 'registration':
             user = userModel.create_user(call.from_user)
-            query = f'''INSERT INTO users(id,first_name,last_name) VALUES({user.id},'{user.first_name}','{user.last_name}')'''
+            query = f'''INSERT INTO users(id,first_name,last_name) VALUES({user.id},'{user.first_name}','{user.last_name}');'''
             db.cursor.execute(query)
-            db.cursor.fetchall()
             bot.send_message(call.message.chat.id,'Регистрация успешна')    
             bot.edit_message_text(call.message.text,call.message.chat.id,call.message.id)
         elif call.data == 'delete_account':
@@ -39,5 +37,6 @@ def Registration(call:types.CallbackQuery):
             write_json('users.json',Users)
             bot.send_message(call.message.chat.id,'Данные удалены')
             bot.edit_message_text(call.message.text,call.message.chat.id,call.message.id)
+
 
 bot.infinity_polling()
