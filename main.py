@@ -5,12 +5,6 @@ import keyboards
 from json_commands import *
 import db
 
-def user_is_exist(user):
-    exist = False
-    for key in Users.keys():
-        if key == user.id:
-            exist = True
-    return exist
 
 token = '8428189477:AAHPkJmwNKGnWl3VCf5KqT-DbgtN7LeoEWs'
 
@@ -25,10 +19,8 @@ commands = ['start','help','myname']
 #Обработчик команд start и help
 @bot.message_handler(commands=['start','help'])
 def bot_hello(message:types.Message):
-    if not user_is_exist(userModel.create_user(message.from_user)):
-        bot.send_message(message.chat.id,f'Cначала необходимо зарегистроваться',reply_markup=keyboards.registration_keyboard())
-    else:
-        bot.send_message(message.chat.id,f'Вот мои комманды',reply_markup=keyboards.command_keyboard())
+    bot.send_message(message.chat.id,f'Cначала необходимо зарегистроваться',reply_markup=keyboards.registration_keyboard())
+        # bot.send_message(message.chat.id,f'Вот мои комманды',reply_markup=keyboards.command_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call:True)
