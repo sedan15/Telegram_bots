@@ -5,39 +5,33 @@ import keyboards
 from json_commands import *
 import db
 
-
 token = '7663789481:AAG2hDe1_rtNGUEMl1zdkY1r2cvTXcLsQGs'
 
 
 bot = telebot.TeleBot(token)
-
-
-Users = read_json('users.json') #Список с пользователями
-
-print(Users)
 
 commands = ['start','help','myname']
 
 #Обработчик команд start и help
 @bot.message_handler(commands=['start','help'])
 def bot_hello(message:types.Message):
-    bot.send_message(message.chat.id,f'Cначала необходимо зарегистроваться',reply_markup=keyboards.registration_keyboard())
-        # bot.send_message(message.chat.id,f'Вот мои комманды',reply_markup=keyboards.command_keyboard())
+    user = db.get_one_by_id('users',message.from_user.id) #Поиск пользователя в базе данных
+    if user == None:
+        bot.send_message(message.chat.id,f'Cначала необходимо зарегистроваться',reply_markup=keyboards.registration_keyboard())
+    else:
+        bot.send_message(message.chat.id,f'Вот мои комманды',reply_markup=keyboards.command_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call:True)
-def Registration(call:types.CallbackQuery):
+def callback_handler(call:types.CallbackQuery):
     if call.message:
         if call.data == 'registration':
             user = userModel.create_user(call.from_user)
-            query = f'''INSERT INTO users(id,first_name,last_name) VALUES({user.id},'{user.first_name}','{user.last_name}');'''
-            db.cursor.execute(query)
+            db.save_one('users','id,first_name,last_name',f'''{user.id},'{user.first_name}','{user.last_name}' ''') #Запись пользоватея в базу данных
             bot.send_message(call.message.chat.id,'Регистрация успешна')    
             bot.edit_message_text(call.message.text,call.message.chat.id,call.message.id)
         elif call.data == 'delete_account':
-            user = user.create_user(call.from_user)
-            del Users[str(user.id)]
-            write_json('users.json',Users)
+            db.delete_one_by_id('users',call.from_user.id) #Удаление пользователя из базы данныз
             bot.send_message(call.message.chat.id,'Данные удалены')
             bot.edit_message_text(call.message.text,call.message.chat.id,call.message.id)
 
