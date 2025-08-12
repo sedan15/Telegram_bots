@@ -6,7 +6,7 @@ from json_commands import *
 import db
 
 def get_token():
-    file = open('token.txt','r')
+    file = open('token_api.txt','r')
     return file.read()
 
 bot = telebot.TeleBot(get_token())
