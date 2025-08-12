@@ -5,10 +5,11 @@ import keyboards
 from json_commands import *
 import db
 
-token = '7663789481:AAG2hDe1_rtNGUEMl1zdkY1r2cvTXcLsQGs'
+def get_token():
+   file = open('token.txt','r')
+   return file.read()
 
-
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(get_token())
 
 commands = ['start','help','myname']
 
