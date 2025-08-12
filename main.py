@@ -8,7 +8,10 @@ import db
 
 token = '7663789481:AAG2hDe1_rtNGUEMl1zdkY1r2cvTXcLsQGs'
 
+
 bot = telebot.TeleBot(token)
+
+
 Users = read_json('users.json') #Список с пользователями
 
 print(Users)
